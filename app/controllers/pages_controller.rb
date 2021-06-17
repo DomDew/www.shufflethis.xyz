@@ -2,25 +2,34 @@ require "base64"
 
 class PagesController < ApplicationController
   def index
-    if params[:code].present?
-      @code = params[:code]
-      @redirect_uri = "http://localhost:3000/index"
+    @code = params[:code]
+    @redirect_uri = "http://localhost:3000/index"
 
-      @token_response = request_token(@code, @redirect_uri)
-      @token_hash = JSON.parse(@token_response.data[:body])
+    @token_response = request_token(@code, @redirect_uri)
+    @access_token = JSON.parse(@token_response.data[:body])["access_token"]
 
-      @playlists = JSON.parse(get_playlists(@token_hash["access_token"])[:body])["items"]
-      @playlists_names_ids = @playlists.map do |playlist|
-        {
-          id: playlist["id"],
-          name: playlist["name"]
-        }
-      end
+    if @token_response[:status] == 400
+      redirect_to login_path, notice: "Oops, there has been a slight hickup. Please login again!"
+    else
+      get_user_playlists
     end
   end
 
   def spotify_auth
     redirect_to build_auth_url
+  end
+
+  def shuffle_playlist
+
+    # get playlist
+    # @playlist = get_playlist
+
+    # resort tracks in playlist
+
+    # post updated list to spotify
+
+    # if status 401 --> refresh token
+    # if status 403 --> You are not allowed
   end
 
   private
@@ -48,13 +57,29 @@ class PagesController < ApplicationController
       )
   end
 
-  def get_playlists(access_token)
+  def fetch_playlists
     Excon.get("https://api.spotify.com/v1/me/playlists",
       headers: {
         "Accept" => "application/json",
         "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{access_token}"
+        "Authorization" => "Bearer #{@access_token}"
       }
       )
+  end
+
+  def get_user_playlists
+    @token_hash = JSON.parse(@token_response.data[:body])
+
+      @playlists = JSON.parse(fetch_playlists[:body])["items"]
+      @playlists_names_ids = @playlists.map do |playlist|
+        {
+          playlist_id: playlist["id"],
+          name: playlist["name"]
+        }
+      end
+  end
+
+  def get_playlist
+    raise
   end
 end

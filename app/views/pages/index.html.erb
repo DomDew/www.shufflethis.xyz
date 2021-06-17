@@ -1,12 +1,16 @@
 
-   <%= @token_hash if @token_hash %>
-   <br>
-   <br>
-   <%= @token_response.data if @token_response %>
-   <br>
-   <br>
-   <%= @playlists_names_ids if @playlists %>
-<% unless @code.present? %>
-  <%= link_to "login with spotify", spotify_auth_path %>
+<%= @token_hash if @token_hash %>
+<br>
+<br>
+<%= @token_response.data if @token_response %>
+<br>
+<br>
+<%= @playlists_names_ids if @playlists %>
+
+<% @playlists_names_ids.each do |playlist| %>
+  <div class="playlist-wrapper">
+    <p><%= playlist[:name].truncate(30) %></p>
+    <%= link_to "shufflethis!", index_path(access_token: @access_token, playlist_id: playlist[:playlist_id]), method: "post" %>
+  </div>
 <% end %>
 
