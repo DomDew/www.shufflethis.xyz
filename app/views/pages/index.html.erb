@@ -1,12 +1,12 @@
-<% if params[:code].present? %>
-   <%= @token_hash %>
+
+   <%= @token_hash if @token_hash %>
    <br>
    <br>
-   <%= @token_response.data %>
+   <%= @token_response.data if @token_response %>
    <br>
    <br>
-   <%= @playlists.data %>
-<% else %>
+   <%= @playlists_names_ids if @playlists %>
+<% unless @code.present? %>
   <%= link_to "login with spotify", spotify_auth_path %>
 <% end %>
 

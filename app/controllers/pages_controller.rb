@@ -6,11 +6,16 @@ class PagesController < ApplicationController
       @code = params[:code]
       @redirect_uri = "http://localhost:3000/index"
 
-      @token_response = request_token
+      @token_response = request_token(@code, @redirect_uri)
       @token_hash = JSON.parse(@token_response.data[:body])
 
-      @playlists = get_playlists(@token_hash["access_token"])
-      # Wenn 401 dann refresh...
+      @playlists = JSON.parse(get_playlists(@token_hash["access_token"])[:body])["items"]
+      @playlists_names_ids = @playlists.map do |playlist|
+        {
+          id: playlist["id"],
+          name: playlist["name"]
+        }
+      end
     end
   end
 
@@ -29,12 +34,12 @@ class PagesController < ApplicationController
     @url = "#{@base_url}?client_id=#{ENV['CLIENT_ID']}&response_type=code&redirect_uri=#{@redirect_uri}&show_dialog=true&scope=#{@scope}"
   end
 
-  def request_token
+  def request_token(code, redirect_uri)
     Excon.post("https://accounts.spotify.com/api/token",
       body: URI.encode_www_form(
         grant_type: "authorization_code",
-        code: @code,
-        redirect_uri: @redirect_uri,
+        code: code,
+        redirect_uri: redirect_uri,
         ),
       headers: {
         "Content-Type" => "application/x-www-form-urlencoded",
