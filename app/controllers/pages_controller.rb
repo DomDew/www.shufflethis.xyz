@@ -20,9 +20,10 @@ class PagesController < ApplicationController
   end
 
   def shuffle_playlist
+    @playlist_return = get_playlist
+    @playlist = JSON.parse(@playlist_return.data[:body])
 
-    # get playlist
-    # @playlist = get_playlist
+    raise
 
     # resort tracks in playlist
 
@@ -80,6 +81,11 @@ class PagesController < ApplicationController
   end
 
   def get_playlist
-    raise
+    Excon.get("https://api.spotify.com/v1/playlists/#{params[:playlist_id]}",
+      headers: {
+        "Content-Type" => "application/x-www-form-urlencoded",
+        "Authorization" => "Bearer #{params[:access_token]}"
+        }
+      )
   end
 end
