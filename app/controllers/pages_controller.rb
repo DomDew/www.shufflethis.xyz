@@ -1,4 +1,5 @@
 require "base64"
+require "json"
 
 class PagesController < ApplicationController
   def index
@@ -21,11 +22,21 @@ class PagesController < ApplicationController
 
   def shuffle_playlist
 
-    weight_tracks(playlist_track_ids)
+    weight_tracks(playlist_track_uris)
     @shuffle_tracks = Pickup.new(@tracks_weighted, uniq: true)
     @tracks_shuffled = @shuffle_tracks.pick(@tracks_weighted.length)
 
+    # /#{CGI.escape("uris=#{@tracks_shuffled.join(',')}")}
+    # #{params[:playlist_id]}/tracks?#{CGI.escape("uris=#{@tracks_shuffled.join(',')}")}
 
+    @put_request = Excon.put("https://api.spotify.com/v1/playlists/#{params[:playlist_id]}/tracks",
+      body:
+        "{ \"uris\": #{@tracks_shuffled.to_json} }",
+      headers: {
+        "Accept" => "application/json",
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{params[:access_token]}"
+      })
 
     raise
 
@@ -58,8 +69,7 @@ class PagesController < ApplicationController
       headers: {
         "Content-Type" => "application/x-www-form-urlencoded",
         "Authorization" => "Basic #{Base64.strict_encode64("#{ENV['CLIENT_ID']}:#{ENV['CLIENT_SECRET']}")}"
-        }
-      )
+      })
   end
 
   # Make get request for current users playlists with access token
@@ -69,8 +79,7 @@ class PagesController < ApplicationController
         "Accept" => "application/json",
         "Content-Type" => "application/json",
         "Authorization" => "Bearer #{@access_token}"
-      }
-      )
+      })
   end
 
   # Select names and id's for users playlists from response
@@ -92,52 +101,51 @@ class PagesController < ApplicationController
       headers: {
         "Content-Type" => "application/x-www-form-urlencoded",
         "Authorization" => "Bearer #{params[:access_token]}"
-        }
-      )
+      })
   end
 
   # Create new Array containing the id's of the tracks
-  def playlist_track_ids
+  def playlist_track_uris
     @playlist_return = playlist
     @playlist = JSON.parse(@playlist_return.data[:body])
-    @playlist_track_ids =  @playlist["tracks"]["items"].map { |track| track["track"]["id"] }
+    @playlist_track_uris = @playlist["tracks"]["items"].map { |track| track["track"]["uri"] }
   end
 
   # Create Hash to weight tracks dependent on the length of the playlist.
   # This isn't dry - Refactor to handle weight assignment in one iteration instead of three.
   # TODO: Add additional weight to tracks depending on when they have been added to the playlist
-  def weight_tracks(track_ids)
+  def weight_tracks(track_uris)
     @tracks_weighted = {}
 
-    if track_ids.length < 15
-      track_ids.each do |track_id|
-        @tracks_weighted[track_id] = 10
+    if track_uris.length < 15
+      track_ids.each do |track_uri|
+        @tracks_weighted[track_uri] = 10
       end
-      track_ids.first(3).each do |track_id|
-        @tracks_weighted[track_id] = 8
+      track_uris.first(3).each do |track_uri|
+        @tracks_weighted[track_uri] = 8
       end
-      track_ids.last(3).each do |track_id|
-        @tracks_weighted[track_id] = 15
+      track_uris.last(3).each do |track_uri|
+        @tracks_weighted[track_uri] = 15
       end
-    elsif track_ids.length >= 30
-      track_ids.each do |track_id|
-        @tracks_weighted[track_id] = 10
+    elsif track_uris.length >= 30
+      track_uris.each do |track_uri|
+        @tracks_weighted[track_uri] = 10
       end
-      track_ids.first(10).each do |track_id|
-        @tracks_weighted[track_id] = 8
+      track_uris.first(10).each do |track_uri|
+        @tracks_weighted[track_uri] = 8
       end
-      track_ids.last(10).each do |track_id|
-        @tracks_weighted[track_id] = 15
+      track_uris.last(10).each do |track_uri|
+        @tracks_weighted[track_uri] = 15
       end
-    elsif track_ids.length >= 15
-      track_ids.each do |track_id|
-        @tracks_weighted[track_id] = 10
+    elsif track_uris.length >= 15
+      track_uris.each do |track_uri|
+        @tracks_weighted[track_uri] = 10
       end
-      track_ids.first(5).each do |track_id|
-        @tracks_weighted[track_id] = 8
+      track_uris.first(5).each do |track_uri|
+        @tracks_weighted[track_uri] = 8
       end
-      track_ids.last(5).each do |track_id|
-        @tracks_weighted[track_id] = 15
+      track_uris.last(5).each do |track_uri|
+        @tracks_weighted[track_uri] = 15
       end
     end
   end
