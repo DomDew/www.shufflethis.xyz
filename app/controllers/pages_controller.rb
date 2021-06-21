@@ -2,6 +2,12 @@ require "base64"
 require "json"
 
 class PagesController < ApplicationController
+  # ** Initial get request when user clicks "login with spotify" button (redirects user to index page, where index method will be triggered)
+  def spotify_auth
+    redirect_to build_auth_url
+  end
+
+  # ** Take code that has been returned from initial call to spotify API and get access and refresh token from spotify
   def index
     @code = params[:code]
     @redirect_uri = "http://localhost:3000/index"
@@ -15,7 +21,7 @@ class PagesController < ApplicationController
       redirect_to login_path, notice: "Oops, there has been a slight hickup. Please login again!"
     else
       # ** If token request successful, then redirect to playlist page.
-      # This is necessary so that the page doesn't crash on page reload / loading flashes later. **
+      # The redirect is necessary so that the page doesn't crash on page reload / loading flashes later. **
       redirect_to playlists_path(access_token: @access_token, refresh_token: @refresh_token)
     end
   end
@@ -29,10 +35,6 @@ class PagesController < ApplicationController
     # ** In view call post action to playlists (shuffle_playlist) to get playlist tracks on button click,
     # perform a weighted shuffle on the playlist and make put request to spotify API **
     user_playlists
-  end
-
-  def spotify_auth
-    redirect_to build_auth_url
   end
 
   def shuffle_playlist
@@ -171,6 +173,7 @@ class PagesController < ApplicationController
     end
   end
 
+  # ** Overwrite playlist content with newly shuffled tracks
   def shufflethis_playlist(access_token)
     @shuffle_response = Excon.put(
       "https://api.spotify.com/v1/playlists/#{params[:playlist_id]}/tracks",
@@ -183,6 +186,7 @@ class PagesController < ApplicationController
     )
   end
 
+  # ** Give feedback to user / progress given the status of the response of the API
   def handle_shuffle_response
     case @shuffle_response[:status]
     when 201
@@ -191,6 +195,7 @@ class PagesController < ApplicationController
         refresh_token: params[:refresh_token]
       ), notice: "Mixed it up real good!", remote: true
     when 401
+      # ** Refresh token if token is expired (401), then shuffle playlist again
       shufflethis_playlist(refresh_access_token)
       if @shuffle_response[:status] == 201
         @notice = "Mixed it up real good!"
