@@ -8,6 +8,7 @@ class PagesController < ApplicationController
 
     @token_response = request_token(@code, @redirect_uri)
     @access_token = JSON.parse(@token_response.data[:body])["access_token"]
+    @refresh_token = JSON.parse(@token_response.data[:body])["refresh_token"]
 
     if @token_response[:status] == 400
       redirect_to login_path, notice: "Oops, there has been a slight hickup. Please login again!"
@@ -21,25 +22,18 @@ class PagesController < ApplicationController
   end
 
   def shuffle_playlist
-
     weight_tracks(playlist_track_uris)
     @shuffle_tracks = Pickup.new(@tracks_weighted, uniq: true)
     @tracks_shuffled = @shuffle_tracks.pick(@tracks_weighted.length)
 
-    # /#{CGI.escape("uris=#{@tracks_shuffled.join(',')}")}
-    # #{params[:playlist_id]}/tracks?#{CGI.escape("uris=#{@tracks_shuffled.join(',')}")}
+    shufflethis_playlist(params[:access_token])
 
-    @put_request = Excon.put("https://api.spotify.com/v1/playlists/#{params[:playlist_id]}/tracks",
-      body:
-        "{ \"uris\": #{@tracks_shuffled.to_json} }",
-      headers: {
-        "Accept" => "application/json",
-        "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{params[:access_token]}"
-      })
+    case @shuffle_response[:status]
+    when 201 then redirect_to index_path, notice: "Mixed it up real good!"
+    when 401 then shufflethis_playlist(refresh_token)
+    end
 
     raise
-
     # post updated list to spotify
 
     # if status 401 --> refresh token
@@ -70,6 +64,17 @@ class PagesController < ApplicationController
         "Content-Type" => "application/x-www-form-urlencoded",
         "Authorization" => "Basic #{Base64.strict_encode64("#{ENV['CLIENT_ID']}:#{ENV['CLIENT_SECRET']}")}"
       })
+  end
+
+  # Make post request to get new access token based on refresh token
+  def refresh_token
+    @refresh_response = Excon.post("https://accounts.spotify.com/api/token",
+      body: URI.encode_www_form(
+        grant_type: "refresh_token",
+        refresh_token: @refresh_token
+      ))
+
+    @access_token = JSON.parse(@refresh_response.data[:body])["access_token"]
   end
 
   # Make get request for current users playlists with access token
@@ -148,5 +153,16 @@ class PagesController < ApplicationController
         @tracks_weighted[track_uri] = 15
       end
     end
+  end
+
+  def shufflethis_playlist(access_token)
+    @shuffle_response = Excon.put("https://api.spotify.com/v1/playlists/#{params[:playlist_id]}/tracks",
+      body:
+        "{ \"uris\": #{@tracks_shuffled.to_json} }",
+      headers: {
+        "Accept" => "application/json",
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{access_token}"
+      })
   end
 end
