@@ -1,3 +1,10 @@
 // Place all the styles related to the pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+@use 'components/colors'
+
+@use 'components/button'
+@use 'components/center-card'
+@use 'components/fonts'
+@use 'components/playlists'
