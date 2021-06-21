@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get "index", to: "pages#index"
   get "login", to: "pages#login"
+  get "playlists", to: "pages#playlists"
   get "spotify_auth", to: "pages#spotify_auth"
-  post "index", to: "pages#shuffle_playlist"
+  post "playlists", to: "pages#shuffle_playlist"
 end
