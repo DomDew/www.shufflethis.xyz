@@ -1,11 +1,8 @@
-
-<%= @token_hash if @token_hash %>
-<br>
-<br>
-<%= @token_response.data if @token_response %>
-<br>
-<br>
-<%= @playlists_names_ids if @playlists %>
+<% flash.each do |type, msg| %>
+  <div>
+    <%= msg %>
+  </div>
+<% end %>
 
 <% @playlists_names_ids.each do |playlist| %>
   <div class="playlist-wrapper">

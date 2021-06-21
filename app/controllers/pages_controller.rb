@@ -31,9 +31,9 @@ class PagesController < ApplicationController
     case @shuffle_response[:status]
     when 201 then redirect_to index_path, notice: "Mixed it up real good!"
     when 401 then shufflethis_playlist(refresh_token)
+    when 403 then flash.alert = "Hey! This isn't your playlist... Why would you shufflethis?"
     end
 
-    raise
     # post updated list to spotify
 
     # if status 401 --> refresh token
@@ -75,6 +75,7 @@ class PagesController < ApplicationController
       ))
 
     @access_token = JSON.parse(@refresh_response.data[:body])["access_token"]
+    raise
   end
 
   # Make get request for current users playlists with access token
