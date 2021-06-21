@@ -1,0 +1,12 @@
+<% flash.each do |type, msg| %>
+  <div>
+    <%= msg %>
+  </div>
+<% end %>
+
+<% @playlists_names_ids.each do |playlist| %>
+  <div class="playlist-wrapper">
+    <p><%= playlist[:name].truncate(30) %></p>
+    <%= link_to "shufflethis!", playlists_path(access_token: @access_token, refresh_token: @refresh_token, playlist_id: playlist[:playlist_id]), method: "post" %>
+  </div>
+<% end %>
