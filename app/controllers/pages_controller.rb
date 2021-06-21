@@ -193,12 +193,12 @@ class PagesController < ApplicationController
       redirect_to playlists_path(
         access_token: params[:access_token],
         refresh_token: params[:refresh_token]
-      ), notice: "Mixed it up real good!", remote: true
+      ), notice: "Mixed up #{@playlist["name"]} real good!", remote: true
     when 401
       # ** Refresh token if token is expired (401), then shuffle playlist again
       shufflethis_playlist(refresh_access_token)
       if @shuffle_response[:status] == 201
-        @notice = "Mixed it up real good!"
+        @notice = "Mixed up '#{@playlist["name"]}' real good!"
       else
         @notice = "Oops! Something went wrong... Please try again!"
       end
@@ -210,7 +210,7 @@ class PagesController < ApplicationController
       redirect_to playlists_path(
         access_token: params[:access_token],
         refresh_token: params[:refresh_token]
-      ), alert: "Wait... This isn't your playlist! Why would you shufflethis?", remote: true
+      ), alert: "Wait... '#{@playlist["name"]}' isn't your playlist! Why would you shufflethis?", remote: true
     end
   end
 end

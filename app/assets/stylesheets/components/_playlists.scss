@@ -40,3 +40,21 @@
     opacity: 1;
   }
 }
+
+.success {
+  background-color: #1DB954;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  width: 484px;
+  text-align: center;
+}
+
+.denied {
+  background-color: #969534;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  width: 484px;
+  text-align: center;
+}

@@ -1,15 +1,18 @@
-<% flash.each do |type, msg| %>
-  <div>
-    <%= msg %>
-  </div>
-<% end %>
-
 <div class="main-wrapper">
   <div class="center-card">
     <div class="instructions">
       <p class="how-to">How this works:</p>
       <p>If you press the button next to a playlist, the tracks in the playlist will be resorted. Open spotify, press play and enjoy your newly shuffled playlist!</p>
     </div>
+    <% flash.each do |type, msg| %>
+      <div class="alert">
+        <% if type == "notice" %>
+          <p class="success"><%= msg %></p>
+        <% elsif type == "alert" %>
+          <p class="denied"><%= msg %></p>
+        <% end %>
+      </div>
+    <% end %>
     <div class="playlists-wrapper">
       <% @playlists_names_ids.each do |playlist| %>
         <div class="playlist">
