@@ -13,3 +13,21 @@
  *= require_tree .
  *= require_self
  */
+
+// ** MAIN STYLES **
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: #202124;
+}
+
+.main-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+

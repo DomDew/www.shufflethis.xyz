@@ -1,0 +1,12 @@
+.btn-login {
+  text-decoration: none;
+  background-color: #1DB954;
+  opacity: 0.7;
+  padding: 16px 46px 16px;
+  border-radius: 500px;
+  font-size: 24px;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+}

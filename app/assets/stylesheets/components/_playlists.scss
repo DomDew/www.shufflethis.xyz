@@ -1,0 +1,42 @@
+.instructions {
+  width: 500px;
+  margin-bottom: 2rem;
+}
+
+.how-to {
+  margin-bottom: 1em;
+}
+
+.playlist {
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  margin-bottom: 8px;
+}
+
+.playlist-name {
+  width: 75%;
+  height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 16px;
+  background-color: #202124;
+  border-top-left-radius: 500px;
+  border-bottom-left-radius: 500px;
+}
+
+.btn-shufflethis {
+  text-decoration: none;
+  background-color: #1DB954;
+  padding: 16px;
+  width: 20%;
+  height: 20px;
+  border-top-right-radius: 500px;
+  border-bottom-right-radius: 500px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+}

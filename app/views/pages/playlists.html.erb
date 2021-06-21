@@ -4,9 +4,19 @@
   </div>
 <% end %>
 
-<% @playlists_names_ids.each do |playlist| %>
-  <div class="playlist-wrapper">
-    <p><%= playlist[:name].truncate(30) %></p>
-    <%= link_to "shufflethis!", playlists_path(access_token: @access_token, refresh_token: @refresh_token, playlist_id: playlist[:playlist_id]), method: "post" %>
+<div class="main-wrapper">
+  <div class="center-card">
+    <div class="instructions">
+      <p class="how-to">How this works:</p>
+      <p>If you press the button next to a playlist, the tracks in the playlist will be resorted. Open spotify, press play and enjoy your newly shuffled playlist!</p>
+    </div>
+    <div class="playlists-wrapper">
+      <% @playlists_names_ids.each do |playlist| %>
+        <div class="playlist">
+          <p class="playlist-name"><%= playlist[:name] %></p>
+          <%= link_to "shufflethis!", playlists_path(access_token: @access_token, refresh_token: @refresh_token, playlist_id: playlist[:playlist_id]), method: "post", class: "btn-shufflethis" %>
+        </div>
+      <% end %>
+    </div>
   </div>
-<% end %>
+</div>
