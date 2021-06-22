@@ -2,22 +2,25 @@
   <div class="center-card">
     <div class="instructions">
       <p class="how-to">How this works:</p>
-      <p>If you press the button next to a playlist, the tracks in the playlist will be resorted. Open spotify, press play and enjoy your newly shuffled playlist!</p>
+      <p>Press a playlist and we will take care to <strong>shufflethis!</strong>
+      Open spotify, go to your freshly shuffled playlist and make sure to display it in 'custom order'.
+      Press play and let your ears be messaged by just the right track we selected for you... and then some more! That's it!</p>
     </div>
     <% flash.each do |type, msg| %>
       <div class="alert">
         <% if type == "notice" %>
-          <p class="success"><%= msg %></p>
+          <p class="notice success"><%= msg %></p>
         <% elsif type == "alert" %>
-          <p class="denied"><%= msg %></p>
+          <p class="notice denied"><%= msg %></p>
         <% end %>
       </div>
     <% end %>
     <div class="playlists-wrapper">
       <% @playlists_names_ids.each do |playlist| %>
         <div class="playlist">
-          <p class="playlist-name"><%= playlist[:name] %></p>
-          <%= link_to "shufflethis!", playlists_path(access_token: @access_token, refresh_token: @refresh_token, playlist_id: playlist[:playlist_id]), method: "post", class: "btn-shufflethis" %>
+          <%= link_to playlists_path(access_token: @access_token, refresh_token: @refresh_token, playlist_id: playlist[:playlist_id]), method: "post", class: "btn playlist" do %>
+            <%= playlist[:name] %>
+          <% end %>
         </div>
       <% end %>
     </div>

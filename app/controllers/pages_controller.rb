@@ -10,7 +10,7 @@ class PagesController < ApplicationController
   # ** Take code that has been returned from initial call to spotify API and get access and refresh token from spotify
   def index
     @code = params[:code]
-    @redirect_uri = "http://localhost:3000/index"
+    @redirect_uri = ENV['REDIRECT_URI']
 
     @token_response = request_token(@code, @redirect_uri)
     @access_token = JSON.parse(@token_response.data[:body])["access_token"]
@@ -56,7 +56,7 @@ class PagesController < ApplicationController
   # ** Build url for Spotify OAuth (get request)
   def build_auth_url
     @base_url = "https://accounts.spotify.com/authorize"
-    @redirect_uri = "http://localhost:3000/index"
+    @redirect_uri = ENV['REDIRECT_URI']
 
     @scope = "playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative"
 
@@ -85,12 +85,15 @@ class PagesController < ApplicationController
       "https://accounts.spotify.com/api/token",
       body: URI.encode_www_form(
         grant_type: "refresh_token",
-        refresh_token: @refresh_token
-      )
+        refresh_token: params[:refresh_token]
+      ),
+      headers: {
+        "Content-Type" => "application/x-www-form-urlencoded",
+        "Authorization" => "Basic #{Base64.strict_encode64("#{ENV['CLIENT_ID']}:#{ENV['CLIENT_SECRET']}")}"
+      }
     )
 
     @access_token = JSON.parse(@refresh_response.data[:body])["access_token"]
-    raise
   end
 
   # Make get request for current users playlists with access token
@@ -118,7 +121,7 @@ class PagesController < ApplicationController
 
   # Make get request for given playlist (on button click)
   def playlist
-    Excon.get(
+    @playlist_response = Excon.get(
       "https://api.spotify.com/v1/playlists/#{params[:playlist_id]}",
       headers: {
         "Content-Type" => "application/x-www-form-urlencoded",
