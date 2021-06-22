@@ -1,20 +1,20 @@
 <div class="main-wrapper">
   <div class="center-card">
+    <% flash.each do |type, msg| %>
+      <% if type == "notice" %>
+        <p class="notice success"><%= msg %></p>
+      <% elsif type == "alert" %>
+        <p class="notice denied"><%= msg %></p>
+      <% end %>
+      <p class="notice spacer"><%= msg %></p>
+    <% end %>
     <div class="instructions">
       <p class="how-to">How this works:</p>
       <p>Press a playlist and we will take care to <strong>shufflethis!</strong>
       Open spotify, go to your freshly shuffled playlist and make sure to display it in 'custom order'.
-      Press play and let your ears be messaged by just the right track we selected for you... and then some more! That's it!</p>
+      Press play and let your ears be messaged by just the right track we selected for you... and then some more!</p>
     </div>
-    <% flash.each do |type, msg| %>
-      <div class="alert">
-        <% if type == "notice" %>
-          <p class="notice success"><%= msg %></p>
-        <% elsif type == "alert" %>
-          <p class="notice denied"><%= msg %></p>
-        <% end %>
-      </div>
-    <% end %>
+
     <div class="playlists-wrapper">
       <% @playlists_names_ids.each do |playlist| %>
         <div class="playlist">

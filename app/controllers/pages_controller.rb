@@ -206,7 +206,7 @@ class PagesController < ApplicationController
       redirect_to playlists_path(
         access_token: params[:access_token],
         refresh_token: params[:refresh_token]
-      ), notice: "Mixed up #{@playlist["name"]} real good!", remote: true
+      ), notice: "Mixed up '#{@playlist["name"]}'' real good!", remote: true
     when 401
       # ** Refresh token if token is expired (401), then shuffle playlist again
       shufflethis_playlist(refresh_access_token)

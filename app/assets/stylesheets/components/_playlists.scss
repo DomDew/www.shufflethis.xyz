@@ -5,7 +5,7 @@ $angle: 8px;
 $angle-o: 4px;
 
 .instructions {
-  margin-top: 6rem;
+  margin-top: 2rem;
   width: 80vw;
   margin-bottom: 2rem;
 }
@@ -22,8 +22,7 @@ $angle-o: 4px;
 }
 
 .notice {
-  position: absolute;
-  top: 0;
+
   padding: 8px;
   width: 80vw;
   text-align: center;
@@ -58,10 +57,18 @@ $angle-o: 4px;
   }
 
   &.success {
+    position: absolute;
+    top: 0;
     background-color: $green;
   }
 
   &.denied {
+    position: absolute;
+    top: 0;
     background-color: $yellow;
+  }
+
+  &.spacer {
+    opacity: 0;
   }
 }
