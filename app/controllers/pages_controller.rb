@@ -154,7 +154,7 @@ class PagesController < ApplicationController
     @tracks_weighted = {}
 
     if track_uris.length < 15
-      track_ids.each do |track_uri|
+      track_uris.each do |track_uri|
         @tracks_weighted[track_uri] = 10
       end
       track_uris.first(3).each do |track_uri|
