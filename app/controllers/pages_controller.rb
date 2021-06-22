@@ -119,13 +119,23 @@ class PagesController < ApplicationController
     end
   end
 
-  # Make get request for given playlist (on button click)
+  # Make get request for given playlist (on button click) and handle response status (refresh token if needed)
   def playlist
-    @playlist_response = Excon.get(
+    @playlist_response = fetch_playlist(params[:access_token])
+
+    case @playlist_response.status
+    when 401 then fetch_playlist(refresh_access_token)
+    when 200 then @playlist_response
+    end
+  end
+
+  # Get request for clicked playlist
+  def fetch_playlist(access_token)
+    Excon.get(
       "https://api.spotify.com/v1/playlists/#{params[:playlist_id]}",
       headers: {
         "Content-Type" => "application/x-www-form-urlencoded",
-        "Authorization" => "Bearer #{params[:access_token]}"
+        "Authorization" => "Bearer #{access_token}"
       }
     )
   end
