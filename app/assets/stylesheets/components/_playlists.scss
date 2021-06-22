@@ -1,5 +1,12 @@
+$green: #1DB954;
+$black: #001314;
+$yellow: #f2ef4b;
+$angle: 8px;
+$angle-o: 4px;
+
 .instructions {
-  width: 500px;
+  margin-top: 6rem;
+  width: 80vw;
   margin-bottom: 2rem;
 }
 
@@ -10,51 +17,51 @@
 .playlist {
   display: flex;
   justify-content: space-between;
-  width: 500px;
-  margin-bottom: 8px;
+  width: 80vw;
+  margin-bottom: 1em;
 }
 
-.playlist-name {
-  width: 75%;
-  height: 20px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding: 16px;
-  background-color: #202124;
-  border-top-left-radius: 500px;
-  border-bottom-left-radius: 500px;
-}
+.notice {
+  position: absolute;
+  top: 0;
+  padding: 8px;
+  width: 80vw;
+  text-align: center;
+  box-shadow: -6px 6px 0 $black;
+  font-size: 1.5em;
 
-.btn-shufflethis {
-  text-decoration: none;
-  background-color: #1DB954;
-  padding: 16px;
-  width: 20%;
-  height: 20px;
-  border-top-right-radius: 500px;
-  border-bottom-right-radius: 500px;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  &:hover {
-    opacity: 1;
+  &::after {
+    transition: all .15s linear 0s;
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: -4px;
+    width: $angle;
+    height: $angle;
+    background-color: $black;
+    transform: rotate(45deg);
+    z-index: -1;
+
   }
-}
 
-.success {
-  background-color: #1DB954;
-  padding: 8px;
-  border-radius: 5px;
-  margin-bottom: 1em;
-  width: 484px;
-  text-align: center;
-}
+  &::before {
+    transition: all .15s linear 0s;
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    right: 2px;
+    width: $angle;
+    height: $angle;
+    background-color: $black;
+    transform: rotate(45deg);
+    z-index: -1;
+  }
 
-.denied {
-  background-color: #969534;
-  padding: 8px;
-  border-radius: 5px;
-  margin-bottom: 1em;
-  width: 484px;
-  text-align: center;
+  &.success {
+    background-color: $green;
+  }
+
+  &.denied {
+    background-color: $yellow;
+  }
 }

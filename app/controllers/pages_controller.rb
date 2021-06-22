@@ -10,7 +10,7 @@ class PagesController < ApplicationController
   # ** Take code that has been returned from initial call to spotify API and get access and refresh token from spotify
   def index
     @code = params[:code]
-    @redirect_uri = "http://localhost:3000/index"
+    @redirect_uri = ENV['REDIRECT_URI']
 
     @token_response = request_token(@code, @redirect_uri)
     @access_token = JSON.parse(@token_response.data[:body])["access_token"]
@@ -56,7 +56,7 @@ class PagesController < ApplicationController
   # ** Build url for Spotify OAuth (get request)
   def build_auth_url
     @base_url = "https://accounts.spotify.com/authorize"
-    @redirect_uri = "http://localhost:3000/index"
+    @redirect_uri = ENV['REDIRECT_URI']
 
     @scope = "playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative"
 
