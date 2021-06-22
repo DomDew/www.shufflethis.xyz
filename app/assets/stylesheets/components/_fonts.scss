@@ -1,8 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Karla&display=swap');
+$black: #001314;
 
 h1, h2, h3, p, a {
-  font-family: 'Karla', sans-serif;
-  color: rgb(240,240,240);
+  font-family: "Inconsolata", monospace;
+  color: $black;
   margin: 0;
   line-height: 1.6;
+}
+
+h1 {
+  text-transform: uppercase;
 }

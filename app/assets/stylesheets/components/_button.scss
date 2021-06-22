@@ -1,9 +1,9 @@
 $green: #1DB954;
-$brown: #404040;
+$black: #001314;
 $angle: 8px;
 $angle-o: 4px;
 
-.btn-login {
+.btn {
   top: 0;
   left: 0;
   transition: all .15s linear 0s;
@@ -13,17 +13,18 @@ $angle-o: 4px;
   background-color: $green;
 
   text-transform: uppercase;
-  color: $brown;
-  font-family: arial;
+  color: $black;
+  font-family: "Inconsolata", monospace;
+  font-size: 60px;
   letter-spacing: 1px;
 
-  box-shadow: -6px 6px 0 $brown;
+  box-shadow: -6px 6px 0 $black;
   text-decoration: none;
 
   &:hover {
     top: 3px;
     left: -3px;
-    box-shadow: -3px 3px 0 $brown;
+    box-shadow: -3px 3px 0 $black;
 
     &::after {
       top: 1px;
@@ -48,7 +49,7 @@ $angle-o: 4px;
     left: -4px;
     width: $angle;
     height: $angle;
-    background-color: $brown;
+    background-color: $black;
     transform: rotate(45deg);
     z-index: -1;
 
@@ -62,7 +63,7 @@ $angle-o: 4px;
     right: 2px;
     width: $angle;
     height: $angle;
-    background-color: $brown;
+    background-color: $black;
     transform: rotate(45deg);
     z-index: -1;
   }
