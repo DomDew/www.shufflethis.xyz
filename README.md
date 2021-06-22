@@ -1,24 +1,10 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Hey! Welcome to the repo of the hottest spotify shuffle algorithm you didn't even know you needed: www.shufflethis.xyz
 
-Things you may want to cover:
+Feel free to mess around with the code if you feel like it, I tried to document it as best as I could (I promise).
 
-* Ruby version
+This is a rails app, so it comes with all the good stuff that rails provides.
+Just make sure to run 'bundle' to install all the gems that shufflethis relies on.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Have fun!
