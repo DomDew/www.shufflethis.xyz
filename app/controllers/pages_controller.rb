@@ -63,7 +63,7 @@ class PagesController < ApplicationController
     @url = "#{@base_url}?client_id=#{ENV['CLIENT_ID']}&response_type=code&redirect_uri=#{@redirect_uri}&show_dialog=true&scope=#{@scope}"
   end
 
-  # Make post request for creating an access token
+  # ** Make post request for creating an access token
   def request_token(code, redirect_uri)
     Excon.post(
       "https://accounts.spotify.com/api/token",
@@ -79,7 +79,7 @@ class PagesController < ApplicationController
     )
   end
 
-  # Make post request to get new access token based on refresh token
+  # ** Make post request to get new access token based on refresh token
   def refresh_access_token
     @refresh_response = Excon.post(
       "https://accounts.spotify.com/api/token",
@@ -96,19 +96,7 @@ class PagesController < ApplicationController
     @access_token = JSON.parse(@refresh_response.data[:body])["access_token"]
   end
 
-  # Make get request for current users playlists with access token
-  def fetch_playlists
-    Excon.get(
-      "https://api.spotify.com/v1/me/playlists",
-      headers: {
-        "Accept" => "application/json",
-        "Content-Type" => "application/json",
-        "Authorization" => "Bearer #{@access_token}"
-      }
-    )
-  end
-
-  # Select names and id's for users playlists from response
+  # ** Select names and id's for users playlists from response
   def user_playlists
     @playlists = JSON.parse(fetch_playlists[:body])["items"]
     @playlists_names_ids = @playlists.map do |playlist|
@@ -119,7 +107,26 @@ class PagesController < ApplicationController
     end
   end
 
-  # Make get request for given playlist (on button click) and handle response status (refresh token if needed)
+  # ** Make get request for current users playlists with access token
+  def fetch_playlists
+    Excon.get(
+      "https://api.spotify.com/v1/me/playlists?limit=50",
+      headers: {
+        "Accept" => "application/json",
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{@access_token}"
+      }
+    )
+  end
+
+  # ** Create new Array containing the id's of the tracks of a clicked playlist
+  def playlist_track_uris
+    @playlist_return = playlist
+    @playlist = JSON.parse(@playlist_return.data[:body])
+    @playlist_track_uris = @playlist["tracks"]["items"].map { |track| track["track"]["uri"] }
+  end
+
+  # ** Make get request for given playlist (on button click) and handle response status (refresh token if needed)
   def playlist
     @playlist_response = fetch_playlist(params[:access_token])
 
@@ -129,7 +136,7 @@ class PagesController < ApplicationController
     end
   end
 
-  # Get request for clicked playlist
+  # ** Get request for clicked playlist
   def fetch_playlist(access_token)
     Excon.get(
       "https://api.spotify.com/v1/playlists/#{params[:playlist_id]}",
@@ -140,16 +147,9 @@ class PagesController < ApplicationController
     )
   end
 
-  # Create new Array containing the id's of the tracks
-  def playlist_track_uris
-    @playlist_return = playlist
-    @playlist = JSON.parse(@playlist_return.data[:body])
-    @playlist_track_uris = @playlist["tracks"]["items"].map { |track| track["track"]["uri"] }
-  end
-
-  # Create Hash to weight tracks dependent on the length of the playlist.
-  # This isn't dry - Refactor to handle weight assignment in one iteration instead of three.
-  # TODO: Add additional weight to tracks depending on when they have been added to the playlist
+  # ** Create Hash to weight tracks dependent on the length of the playlist.
+  # !!! This isn't dry - Refactor to handle weight assignment in one iteration instead of three.
+  # !!! TODO: Add additional weight to tracks depending on when they have been added to the playlist
   def weight_tracks(track_uris)
     @tracks_weighted = {}
 
