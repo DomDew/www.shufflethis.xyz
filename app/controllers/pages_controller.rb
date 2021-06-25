@@ -44,11 +44,19 @@ class PagesController < ApplicationController
     @shuffle_tracks = Pickup.new(@tracks_weighted, uniq: true)
     @tracks_shuffled = @shuffle_tracks.pick(@tracks_weighted.length)
 
-    # ** Make put request to spotify API to overwrite playlist
-    shufflethis_playlist(params[:access_token])
-
-    # ** Handle response of Spotify API
-    handle_shuffle_response
+    # ** Make put request to spotify API to overwrite playlist, unless it is longer than 100 tracks, to not delete tracks from the playlist.
+    if @tracks_shuffled.length >= 100
+      redirect_to playlists_path(
+        access_token: params[:access_token],
+        refresh_token: params[:refresh_token]
+      ),
+        alert: "Sorry, '#{@playlist["name"]}' has too many tracks... we tried really hard, but we can't shufflethis...",
+        remote: true
+    else
+      shufflethis_playlist(params[:access_token])
+      # ** Handle response of Spotify API
+      handle_shuffle_response
+    end
   end
 
   private
